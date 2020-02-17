@@ -1,6 +1,7 @@
 package com.practice.liam.rest.api.controller.v1;
 
 import com.practice.liam.rest.api.entity.User;
+import com.practice.liam.rest.api.exception.CUserNotFoundException;
 import com.practice.liam.rest.api.model.CommonResult;
 import com.practice.liam.rest.api.model.ListResult;
 import com.practice.liam.rest.api.model.SingleResult;
@@ -33,8 +34,9 @@ public class UserController {
 
     @ApiOperation(value = "회원 조회", notes = "회원번호의 회원을 조회한다")
     @GetMapping(value = "/user/{id}")
-    public SingleResult<User> findUser(@ApiParam(value = "id", required = true) @PathVariable Long id) {
-        return responseService.getSingleResult(userJpaRepo.findById(id).orElse(null));
+    public SingleResult<User> findUser(@ApiParam(value = "id", required = true) @PathVariable Long id,
+                                       @ApiParam(value = "언어", defaultValue = "ko") @RequestParam String lang) {
+        return responseService.getSingleResult(userJpaRepo.findById(id).orElseThrow(CUserNotFoundException::new));
     }
 
     @ApiOperation(value = "회원 등록", notes = "회원을 등록한다")
